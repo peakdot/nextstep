@@ -1,6 +1,7 @@
 var map;
 var markers = [];
 var newMarkers = [];
+var filtermarkers = [];
 var jobs = [];
 var markerIcon = "imgs/markerf.png";
 var infoWindow;
@@ -92,6 +93,37 @@ function initialize() {
         bindInfoWindow(marker, map, infoWindow, html);
       }
     }});
+}
+
+function filtermapmarkers(filter){
+  if(xml != null){
+    var markersXML = xml.documentElement.getElementsByTagName("marker");
+    filtermarkers = [];
+    for (var i = 0; i < markersXML.length; i++) {
+      var id = parseInt(markersXML[i].getAttribute("id"));
+      var name = markersXML[i].getAttribute("name");
+      var type = parseInt(markersXML[i].getAttribute("type"));
+      var point = new google.maps.LatLng(
+        parseFloat(markersXML[i].getAttribute("lat")),
+        parseFloat(markersXML[i].getAttribute("lng")));        
+      var SalaryMax = parseInt(markersXML[i].getAttribute("SalaryMax"));
+      var SalaryMin = parseInt(markersXML[i].getAttribute("SalaryMin"));
+      var wtimeStart = parseInt(markersXML[i].getAttribute("wtimeStart"));
+      var wtimeEnd = parseInt(markersXML[i].getAttribute("wtimeEnd"));
+      var createdDate = markersXML[i].getAttribute("createdDate");
+      if(type != filter.type && SalaryMax > filter.fsalarymin && SalaryMin < filter.fsalarymax && wtimeStart < filter.ftimestart && wtimeEnd > filter.timeend) {
+        var html = "<div class=\"mapiw\"><div class=\"mapiwtext\">" +id + "<br/>" + name + "<br/><b>Цалин: <b/>" + SalaryMin + "-" + SalaryMax+"<br/><b>Ажиллах цаг: <b/>"+wtimeStart+" цагаас " + wtimeEnd + " хүртэл<br/><b>Бүртгэсэн огноо: <b/>"+createdDate+"<br/></div><a href=\"#!\" onclick=\"sideNavi(" + id.toString() + ")\" class=\"waves-effect waves-green btn-flat\">"+"Дэлгэрэнгүй</a><a href=\"#!\" onclick=\"toSpecial(" + id.toString() + ")\" class=\"waves-effect waves-teal btn-flat\">Онцлох</a></div>";
+        var marker = new google.maps.Marker({
+          map: map,
+          position: point,
+          animation: google.maps.Animation.DROP,
+          icon: markerIcon
+        });
+        filtermarkers.push(marker);
+        bindInfoWindow(marker, map, infoWindow, html);
+      }
+    }
+  }
 }
 
 function bindInfoWindow(marker, map, infoWindow, html) {
