@@ -440,8 +440,8 @@ function checkAllCookies(){
 			</center>
 			<br/>
 			<center>
-				<button class="waves-effect waves-green btn" onclick="getfilterparas()">Хайх</button>
-				<button class="waves-effect waves-green btn-flat">Цуцлах</button>
+				<button class="waves-effect waves-green btn" onclick="filtermapmarkers(getfilterparas())">Хайх</button>
+				<button class="waves-effect waves-green btn-flat" onclick="showMarker('job')">Цуцлах</button>
 			</center>
 		</div>
 		<!--Filter End-->
@@ -849,8 +849,7 @@ function checkAllCookies(){
 				var id = setInterval(frame, 3);
 				doneButton.style.display = "block";
 
-				setalljobMarkers(null);
-				setallNewMarkers(map);
+				showMarker('new');
 
 				function frame() {
 					if (pos == -64) {
@@ -866,7 +865,7 @@ function checkAllCookies(){
 				}
 				Materialize.toast('Та байршлаа сонгоно уу!', 3000);
 				clickListener = map.addListener('click', function(e) {
-					addtoNewMarker(e.latLng, map);
+					addtonewMarkers(e.latLng, map);
 				});
 			}
 
@@ -877,8 +876,7 @@ function checkAllCookies(){
 				menufab.style.display = "block";
 				navbrc.style.zIndex = "998";
 
-				setallNewMarkers(null);
-				setalljobMarkers(map);
+				showMarker('job');
 
 				var id = setInterval(frame, 3);
 				function frame() {

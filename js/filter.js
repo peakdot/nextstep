@@ -5,10 +5,10 @@ filter = $("#filter");
 
 function showFilter(){
 	if(filterstatus==false){
-		filter.css('right','10px');
+		$('#filter').addClass('active');
 		filterstatus = true;
 	} else {
-		filter.css('right','-310px');
+		$('#filter').removeClass('active');
 		filterstatus = false;
 	}
 }

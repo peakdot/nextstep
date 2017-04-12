@@ -99,6 +99,7 @@ function filtermapmarkers(filter){
   if(xml != null){
     var markersXML = xml.documentElement.getElementsByTagName("marker");
     filtermarkers = [];
+    setalljobMarkers(null);
     for (var i = 0; i < markersXML.length; i++) {
       var id = parseInt(markersXML[i].getAttribute("id"));
       var name = markersXML[i].getAttribute("name");
@@ -123,6 +124,7 @@ function filtermapmarkers(filter){
         bindInfoWindow(marker, map, infoWindow, html);
       }
     }
+    showMarker('filter');
   }
 }
 
@@ -155,7 +157,15 @@ function doNothing() {}
 
 
 // Sets the map on all markers in the array.
-function setallNewMarkers(map) {
+function setallfilterMarkers(map) {
+  var len = filtermarkers.length;
+  for (var i = 0; i < len; i++) {
+    filtermarkers[i].setMap(map);
+  }
+}
+
+// Sets the map on all markers in the array.
+function setallnewMarkers(map) {
   var len = newMarkers.length;
   for (var i = 0; i < len; i++) {
     newMarkers[i].setMap(map);
@@ -171,35 +181,60 @@ function setalljobMarkers(map) {
 }
 
 // Adds a marker to the map and push to the array.
-function addtojobMarker(latLng, map) {
+function addtonewMarkers(latLng, map) {
+  var len = newMarkers.length;
   var marker = new google.maps.Marker({
     position: latLng,
     map: map,
     animation: google.maps.Animation.DROP,
     icon: markerIcon
   }); 
-  markers.push(marker);
-}
-
-// Adds a marker to the map and push to the array.
-function addtoNewMarker(latLng, map) {
-  var marker = new google.maps.Marker({
-    position: latLng,
-    map: map,
-    animation: google.maps.Animation.DROP,
-    icon: markerIcon
-  }); 
+  marker.addListener('click', function(e) {
+    var len = newMarkers.length;
+    for (var i = 0; i < len; i++) {
+      if(newMarkers[i].position == e.latLng){
+        var tempmark = newMarkers[i];
+        newMarkers[i] = newMarkers[len-1];
+        newMarkers[len-1] = tempmark;
+        newMarkers[len-1].setMap(null);
+        newMarkers.pop();
+        len--;
+      }
+    }
+    console.log(newMarkers);
+  });
   newMarkers.push(marker);
 }
 
-// Removes the markers from the map, but keeps them in the array.
-function clearMarkers() {
-  setallNewMarkers(null);
+function showMarker(type){
+  switch(type){
+    case 'job': {
+      setallfilterMarkers(null);
+      setallnewMarkers(null);
+      setalljobMarkers(map);
+      break;
+    }
+    case 'new': {
+      setallfilterMarkers(null);
+      setallnewMarkers(map);
+      setalljobMarkers(null);
+      break;
+    }
+    case 'filter': {
+      setallfilterMarkers(map);
+      setallnewMarkers(null);
+      setalljobMarkers(null);
+      break;
+    }
+    default: {
+      setallfilterMarkers(null);
+      setallnewMarkers(null);
+      setalljobMarkers(map);
+    }
+  }
 }
 
-// Deletes all markers in the array by removing references to them.
 function deletenewMarkers() {
-  clearMarkers();
-  setalljobMarkers(map);
+  showMarker('job');
   newMarkers = [];
 }

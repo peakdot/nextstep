@@ -46,6 +46,10 @@ nav .profileImage {
 	width: 100%;
 }
 
+.userView {
+	z-index: -1;
+}
+
 .sidenavXbtn { 
 	position: fixed;
 	top: 90px;
